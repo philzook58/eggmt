@@ -1,11 +1,37 @@
 from dataclasses import dataclass
 import itertools
+from typing import NewType, NamedTuple
 
-EId = int
-ENode = tuple[str, tuple[EId, ...]]
-Term = tuple[str, "Term", ...]
+EId = NewType("EId", int)
 
 
+class ENode(NamedTuple):
+    head: str
+    args: tuple[EId, ...]
+
+
+class Term(NamedTuple):
+    head: str
+    args: tuple["Term", ...]
+
+    def children(self):
+        return self.args
+
+
+@dataclass
+class FuncDeclRef:
+    name: str
+    ctx: object  # egraph variant
+
+    def __call__(self, *args):
+        return Term(self.name, args)
+
+
+def Function(name, ctx=None):
+    return FuncDeclRef(name, ctx)
+
+
+@dataclass
 class EGraph:
     enodes: dict[ENode, EId]
     uf: list[EId]
@@ -49,22 +75,18 @@ class EGraph:
             self.enodes = newenodes
 
     def add_term(self, t: Term) -> EId:
-        head, *args = t
+        head, args = t
         args = tuple(self.add_term(arg) for arg in args)
         v = self.enodes.get((head, args))
         if v is None:
             v = self.makeset()
-            self.enodes[(head, tuple(args))] = v
+            self.enodes[ENode(head, tuple(args))] = v
         return v
 
     def check_term(self, t: Term) -> bool:
-        """
-        TODO
         head, *args = t
-        if all(self.check_term(arg) for arg in args):
-            return self.enodes.get((head, tuple(args)))
-        """
-        assert False
+        args = all(self.check_term(arg) for arg in args)
+        return self.enodes.get(ENode(head, args))
 
     def rw(self, n: int, f):
         """
@@ -75,3 +97,30 @@ class EGraph:
             lhs, rhs = f(*i)
             if self.check_term(lhs):
                 self.union(self.add_term(lhs), self.add_term(rhs))
+
+    def extract(self, e: EId) -> Term:
+        # dynamic program cost
+        cost = [float("inf")] * len(self.uf)
+        best = [None] * len(self.uf)
+        done = False
+        while not done:
+            done = True
+            for enode, eid in self.enodes.items():
+                head, args = enode
+                print(enode, eid)
+                enode_cost = 1 + sum(cost[a] for a in args)
+                print(cost[eid], enode_cost)
+                print(cost[eid] < enode_cost)
+                if enode_cost < cost[eid]:
+                    done = False
+                    cost[eid] = enode_cost
+                    best[eid] = enode
+        print(self)
+        print(best)
+        print(cost)
+
+        def _extract(e: EId) -> Term:
+            head, args = best[e]
+            return Term(head, tuple(_extract(a) for a in args))
+
+        return _extract(e)

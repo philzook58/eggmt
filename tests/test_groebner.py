@@ -1,0 +1,41 @@
+from eggmt.groebner import EGraph
+
+
+def test_groebner():
+    E = EGraph()
+    foobar = E.add_term(("foo", ("foo", ("bar",))))
+    bar = E.add_term(("bar",))
+    print(E)
+    E.union(foobar, bar)
+    E.rebuild()
+    print(E)
+    E.union(bar * bar, foobar)
+    E.rebuild()
+    print(E)
+
+    E = EGraph()
+    sinbar = E.add_term(("sin", ("bar",)))
+    cosbiz = E.add_term(("cos", ("biz",)))
+    cosbar = E.add_term(("cos", ("bar",)))
+    t1 = E.add_term(sinbar * sinbar + cosbiz * cosbiz)
+    t2 = E.add_term(sinbar * sinbar + cosbar * cosbar)
+    print(E)
+    print(f"sin(bar)**2 + cos(bar)**2 == {t2}")
+    E.union(t2, 1)
+    E.rebuild()
+    print(E)
+    bar = E.add_term(("bar",))
+    biz = E.add_term(("biz",))
+    E.union(biz, bar)
+    E.rebuild()
+    print(E)
+
+    E = EGraph()
+    foobar = E.add_term(("foo", ("foo", ("bar",))))
+    print(E)
+    # E.rw(1, lambda x: (("foo", x), x))
+    E.rw(1, lambda x: (("foo", x), 2 * x))
+    # E.rw(1, lambda x: (("foo", 2*x), x))
+    print(E)
+    E.rebuild()
+    E
