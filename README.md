@@ -12,3 +12,4 @@ python3 -m pip install -e .
 - Gauss and Groebner Egraphs: Intrinsic Linear and Polynomial Equations <https://www.philipzucker.com/linear_grobner_egraph/>
 - String Knuth Bendix <https://www.philipzucker.com/string_knuth/>
 - Co-Egraphs: Streams, Unification, PEGs, Rational Lambdas <https://www.philipzucker.com/coegraph/>
+- Acyclic Egraphs and Smart Constructors <https://www.philipzucker.com/smart_constructor_aegraph/>
