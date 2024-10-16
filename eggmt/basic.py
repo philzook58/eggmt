@@ -26,6 +26,14 @@ class FuncDeclRef:
     def __call__(self, *args):
         return Term(self.name, args)
 
+    def __getitem__(self, key):
+        # creating lookup
+        return Term(self.name, key)
+
+    def __setitem__(self, key, value):
+        # creating lookup and set
+        pass
+
 
 def Function(name, ctx=None):
     return FuncDeclRef(name, ctx)

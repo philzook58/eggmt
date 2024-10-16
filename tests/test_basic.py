@@ -26,3 +26,7 @@ def test_basic():
     E.union(a, fa)
     E.rebuild()
     assert E.extract(fa) == Term("a", ())
+
+
+def test_math():
+    E = EGraph()
