@@ -28,5 +28,9 @@ def test_basic():
     assert E.extract(fa) == Term("a", ())
 
 
+"""
 def test_math():
     E = EGraph()
+    def math_rule_set(E):
+        E.
+"""

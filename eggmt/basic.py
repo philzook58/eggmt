@@ -35,10 +35,6 @@ class FuncDeclRef:
         pass
 
 
-def Function(name, ctx=None):
-    return FuncDeclRef(name, ctx)
-
-
 @dataclass
 class EGraph:
     enodes: dict[ENode, EId]
@@ -47,6 +43,9 @@ class EGraph:
     def __init__(self):
         self.enodes = {}
         self.uf = []
+
+    def Function(self, name):
+        return FuncDeclRef(name, self)
 
     def makeset(self) -> EId:
         """Create a new equivalence class"""

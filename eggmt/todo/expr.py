@@ -20,3 +20,7 @@ class ExprRef:  # Term
 class Term(NamedTuple):
     head: str
     args: tuple["Term", ...]
+
+
+class HashCons:
+    pass
